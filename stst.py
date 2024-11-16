@@ -6,7 +6,9 @@ import matplotlib.patches as patches
 import numpy as np
 
 # Load your CRF model (replace with your actual model path)
-model = joblib.load("C:/Users/Benz/InfoVis/model.joblib")
+model = joblib.load("model.joblib")
+    
+#"C:/Users/Benz/InfoVis/model.joblib")
 
 stopwords = ["ผู้", "ที่", "ซึ่ง", "อัน"]
 
