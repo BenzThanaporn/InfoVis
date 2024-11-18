@@ -5,4 +5,4 @@ pandas
 numpy
 networkx
 wordcloud
-pyvis.network
+pyvis
