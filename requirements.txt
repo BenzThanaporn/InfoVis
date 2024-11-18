@@ -3,3 +3,10 @@ matplotlib
 scikit-learn
 pandas
 numpy
+networkx
+wordcloud
+pyvis.network
+collections
+matplotlib.font_manager
+math
+random
