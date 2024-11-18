@@ -6,3 +6,4 @@ numpy
 networkx
 wordcloud
 pyvis
+sklearn_crfsuite
