@@ -323,5 +323,7 @@ elif page == "Conclusions & Insights":
     - The POST tag (postal code) exhibits a clear and more accurate prediction pattern compared to other types of tags.  
     - The model demonstrates unstable prediction characteristics and still produces errors, such as predicting provinces like นครราชสีมา and นครปฐม as ADDR (address) when they should be predicted as LOC (location). Similarly, it incorrectly predicts names such as นายสุริยา as ADDR when they should be classified as O (other).  
     - From the bar chart, it can be observed that the model tends to predict words in sentences as LOC more frequently when the area being analyzed is Bangkok. The model predicts an area as LOC in Bangkok twice as often as in other provinces.
+    - When filtering the data to include only addresses from Bangkok, it was found that if house or building numbers do not contain a slash (/), the model can correctly predict them as ADDR in all cases. However, if the house or building numbers include a slash (/), the model's predictions become inconsistent, with such numbers being classified as either O or ADDR.
+    - When filtering the data to include only addresses from other provinces, the model can correctly predict all house or building numbers as ADDR, regardless of whether they include a slash (/) or not.
 
     """)
