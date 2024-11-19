@@ -10,6 +10,7 @@ import joblib
 import math
 import random
 from collections import defaultdict
+import plotly.graph_objects as go
 
 # Load the CSV file with ID column
 data = pd.read_csv('thai_addresses_with_ID(2).csv')
@@ -241,52 +242,45 @@ elif page == "Tag Distribution Comparison":
     bangkok_tag_counts = bangkok_data['Predicted Tag'].value_counts()
     province_tag_counts = province_data['Predicted Tag'].value_counts()
 
-    # Define colors and hatch patterns
-    bar_colors = {
-        'LOC': {'bangkok': '#FF7F00', 'province': '#FFCC99'},  # Medium Orange, Light Orange
-        'ADDR': {'bangkok': '#555555', 'province': '#CCCCCC'},  # Dark Grey, Light Grey
-        'POST': {'bangkok': '#FF3399', 'province': '#FF99CC'},  # Bright Pink, Light Pink
-        'O': {'bangkok': '#003366', 'province': '#6699CC'}  # Dark Blue, Light Blue
-    }
-    hatch_patterns = {'province': '///'}  # Hatch pattern for province
-
-    # Create a bar chart comparing tag distributions
-    fig, ax = plt.subplots()
+    # Define tags and their respective counts
     tags = ['LOC', 'ADDR', 'POST', 'O']
-
-    # Get counts for Bangkok and provinces
     bangkok_counts = [bangkok_tag_counts.get(tag, 0) for tag in tags]
     province_counts = [province_tag_counts.get(tag, 0) for tag in tags]
 
-    bar_width = 0.35
-    index = range(len(tags))
+    # Create Plotly figure
+    fig = go.Figure()
 
-    # Plot bars with colors and hatch patterns
-    for i, tag in enumerate(tags):
-        ax.bar(index[i], bangkok_counts[i], bar_width, 
-            label='Bangkok' if i == 0 else "", 
-            color=bar_colors[tag]['bangkok'])
-        ax.bar(index[i] + bar_width, province_counts[i], bar_width, 
-            label='Province' if i == 0 else "", 
-            color=bar_colors[tag]['province'], hatch=hatch_patterns['province'])
+    # Add bars for Bangkok
+    fig.add_trace(go.Bar(
+        x=tags,
+        y=bangkok_counts,
+        name="Bangkok",
+        marker=dict(color=['#FF7F00', '#555555', '#FF3399', '#003366']),
+        hovertemplate='<b>Bangkok</b><br>Tag: %{x}<br>Count: %{y}<extra></extra>'
+    ))
 
-    # Set chart labels and legend
-    ax.set_xlabel('Tags')
-    ax.set_ylabel('Frequency')
-    ax.set_title('Tag Frequency Comparison: Bangkok vs. Other Provinces')
-    ax.set_xticks([i + bar_width / 2 for i in index])
-    ax.set_xticklabels(tags)
+    # Add bars for provinces
+    fig.add_trace(go.Bar(
+        x=tags,
+        y=province_counts,
+        name="Province",
+        marker=dict(color=['#FFCC99', '#CCCCCC', '#FF99CC', '#6699CC']),
+        hovertemplate='<b>Province</b><br>Tag: %{x}<br>Count: %{y}<extra></extra>',
+        opacity=0.8
+    ))
 
-    # Customize the legend to include box and hatch pattern
-    from matplotlib.patches import Patch
-    legend_elements = [
-        Patch(facecolor='white', label='Bangkok', edgecolor='black'),
-        Patch(facecolor='white', label='Other provinces', edgecolor='black', hatch='///')
-    ]
-    ax.legend(handles=legend_elements, loc='upper right')
+    # Customize layout
+    fig.update_layout(
+        title="Tag Frequency Comparison: Bangkok vs. Other Provinces",
+        xaxis=dict(title="Tags"),
+        yaxis=dict(title="Frequency"),
+        barmode='group',
+        legend=dict(title="Region"),
+    )
 
-    # Display in Streamlit
-    st.pyplot(fig)
+    # Display the chart in Streamlit
+    st.plotly_chart(fig)
+
 
 
 
