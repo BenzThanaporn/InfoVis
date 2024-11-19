@@ -11,7 +11,6 @@ import math
 import random
 from collections import defaultdict
 
-
 # Load the CSV file with ID column
 data = pd.read_csv('thai_addresses_with_ID(2).csv')
 
@@ -103,10 +102,36 @@ def visualize_entities_crf(text: str):
 
     # Display the highlighted text in Streamlit
     st.markdown(highlighted_text, unsafe_allow_html=True)
+    
+    # Create legend using HTML (positioned at the top right)
+    legend_html = """
+    <div style="font-size: 16px; position: absolute; top: 10px; right: 10px; border: 2px solid black; padding: 10px;">
+        <div style="display: flex; align-items: center;">
+            <span style="background-color: #6699CC; border-radius: 50%; width: 15px; height: 15px; display: inline-block; margin-right: 10px;"></span>
+            <span>O</span>
+        </div>
+        <div style="display: flex; align-items: center;">
+            <span style="background-color: #FF7F00; border-radius: 50%; width: 15px; height: 15px; display: inline-block; margin-right: 10px;"></span>
+            <span>LOC</span>
+        </div>
+        <div style="display: flex; align-items: center;">
+            <span style="background-color: #FF3399; border-radius: 50%; width: 15px; height: 15px; display: inline-block; margin-right: 10px;"></span>
+            <span>POST</span>
+        </div>
+        <div style="display: flex; align-items: center;">
+            <span style="background-color: #CCCCCC; border-radius: 50%; width: 15px; height: 15px; display: inline-block; margin-right: 10px;"></span>
+            <span>ADDR</span>
+        </div>
+    </div>
+    """
+
+    # Display the legend in Streamlit
+    st.markdown(legend_html, unsafe_allow_html=True)
+
 
 # Sidebar for Page Navigation
 st.sidebar.title("Explore the Analysis")
-page = st.sidebar.selectbox("Select Page", ["Introduction", "Word Clouds", "Tag Distribution Comparison", "Word Relationships", "Conclusions & Insights"])
+page = st.sidebar.selectbox("Select Page", ["Introduction", "Word Clouds", "Tag Distribution Comparison", "Conclusions & Insights"])
 
 # Introduction Page
 if page == "Introduction":
@@ -115,7 +140,7 @@ if page == "Introduction":
     Welcome to the analysis of the model's performance in predicting locations as either `Bangkok` or `Provincial Areas`.
     This tool will guide you through different visualizations that explore whether there's a **bias** in how the model predicts tags for different locations.
     
-    Let's begin by exploring the data through **Word Clouds**, followed by **Tag Distribution Comparisons** between Bangkok and other provinces, and finally dive into **relationships** between words to see deeper connections.
+    Let's begin by exploring the data through **Word Clouds**, followed by **Tag Distribution Comparisons** between Bangkok and other provinces.
     
     Use the sidebar to navigate between the different parts of the analysis.
     """)
@@ -147,6 +172,7 @@ elif page == "Word Clouds":
     st.markdown("""
     Word clouds are a great way to visualize the most frequent words that the model categorized under different tags.
     Let's see if there are any differences in which words are tagged as `LOC`, `ADDR`, `POST`, and `O` for Bangkok and other provinces.
+    LOC (tambon, amphoe, or province), POST (postal code), ADDR (other address element), or O (the rest).
     """)
 
     # Filtering Options
@@ -160,9 +186,9 @@ elif page == "Word Clouds":
     province_button = st.sidebar.button('ต่างจังหวัด')
 
     if bangkok_button:
-        selected_min_id, selected_max_id = 1, 25
+        selected_min_id, selected_max_id = 1, 24
     elif province_button:
-        selected_min_id, selected_max_id = 26, 50
+        selected_min_id, selected_max_id = 25, 48
     elif all_button or not (bangkok_button or province_button):
         selected_min_id, selected_max_id = data['ID'].min(), data['ID'].max()
 
@@ -170,7 +196,7 @@ elif page == "Word Clouds":
 
     wordcloud_colors = {
         'LOC': "#FF7F00",    # Medium Orange
-        'ADDR': "#CCCCCC",   # Grey
+        'ADDR': "#555555",   # Grey
         'POST': "#FF3399",   # Bright Pink
         'O': "#6699CC"       # Dark Blue
     }
@@ -199,8 +225,6 @@ elif page == "Word Clouds":
             plt.title(f'{category} Word Cloud')
             st.pyplot(plt)
 
-
-
 # Tag Distribution Comparison Page
 elif page == "Tag Distribution Comparison":
     st.title("Tag Distribution: Bangkok vs. Other Provinces")
@@ -210,19 +234,21 @@ elif page == "Tag Distribution Comparison":
     """)
 
     # Filter data for Bangkok and other provinces
-    bangkok_data = data[(data['ID'] >= 1) & (data['ID'] <= 25)]
-    province_data = data[(data['ID'] >= 26) & (data['ID'] <= 50)]
+    bangkok_data = data[(data['ID'] >= 1) & (data['ID'] <= 24)]
+    province_data = data[(data['ID'] >= 25) & (data['ID'] <= 48)]
 
     # Count frequency of each tag for Bangkok and other provinces
     bangkok_tag_counts = bangkok_data['Predicted Tag'].value_counts()
     province_tag_counts = province_data['Predicted Tag'].value_counts()
 
+    # Define colors and hatch patterns
     bar_colors = {
         'LOC': {'bangkok': '#FF7F00', 'province': '#FFCC99'},  # Medium Orange, Light Orange
         'ADDR': {'bangkok': '#555555', 'province': '#CCCCCC'},  # Dark Grey, Light Grey
         'POST': {'bangkok': '#FF3399', 'province': '#FF99CC'},  # Bright Pink, Light Pink
         'O': {'bangkok': '#003366', 'province': '#6699CC'}  # Dark Blue, Light Blue
     }
+    hatch_patterns = {'province': '///'}  # Hatch pattern for province
 
     # Create a bar chart comparing tag distributions
     fig, ax = plt.subplots()
@@ -235,14 +261,14 @@ elif page == "Tag Distribution Comparison":
     bar_width = 0.35
     index = range(len(tags))
 
-    # Plot bars with specific colors
+    # Plot bars with colors and hatch patterns
     for i, tag in enumerate(tags):
         ax.bar(index[i], bangkok_counts[i], bar_width, 
-            label=f'Bangkok - {tag}' if i == 0 else "", 
+            label='Bangkok' if i == 0 else "", 
             color=bar_colors[tag]['bangkok'])
         ax.bar(index[i] + bar_width, province_counts[i], bar_width, 
-            label=f'Province - {tag}' if i == 0 else "", 
-            color=bar_colors[tag]['province'])
+            label='Province' if i == 0 else "", 
+            color=bar_colors[tag]['province'], hatch=hatch_patterns['province'])
 
     # Set chart labels and legend
     ax.set_xlabel('Tags')
@@ -250,27 +276,19 @@ elif page == "Tag Distribution Comparison":
     ax.set_title('Tag Frequency Comparison: Bangkok vs. Other Provinces')
     ax.set_xticks([i + bar_width / 2 for i in index])
     ax.set_xticklabels(tags)
-    ax.legend(loc='upper right')
+
+    # Customize the legend to include box and hatch pattern
+    from matplotlib.patches import Patch
+    legend_elements = [
+        Patch(facecolor='white', label='Bangkok', edgecolor='black'),
+        Patch(facecolor='white', label='Province', edgecolor='black', hatch='///')
+    ]
+    ax.legend(handles=legend_elements, loc='upper right')
 
     # Display in Streamlit
     st.pyplot(fig)
 
 
-# Word Relationships Page
-elif page == "Word Relationships":
-    st.title("Word Relationships Between Tokens")
-    st.markdown("""
-    Here, we explore the relationships between words within each sentence to understand potential **contextual connections**.
-    This graph is interactive and allows you to explore how tokens relate to one another.
-    """)
-
-    G = nx.Graph()
-    # (Graph creation code remains the same)
-    # ... Add nodes and edges to the graph ...
-    net = Network(notebook=False, height='700px', width='100%', bgcolor='#ffffff', font_color='#000000')
-    net.from_nx(G)
-    net.save_graph('filtered_word_relationship_graph.html')
-    st.components.v1.html(open('filtered_word_relationship_graph.html', 'r').read(), height=700, scrolling=True)
 
 # Conclusions & Insights Page
 elif page == "Conclusions & Insights":
@@ -278,10 +296,6 @@ elif page == "Conclusions & Insights":
     st.markdown("""
     ### Summary of Findings:
     - The **Word Clouds** provided an overview of the most frequent tokens categorized by the model.
-    - The **Tag Distribution Comparison** revealed potential biases in tag predictions between `Bangkok` and `Other Provinces`.
-    - The **Word Relationships** visualized contextual connections between tokens, offering insight into how the model might be interpreting relationships.
+    - The **Tag Distribution Comparison** revealed potential biases in tag predictions between `Bangkok` and `Other Provinces`.  
 
-    ### Next Steps:
-    - To address observed biases, consider expanding the dataset to include more examples from underrepresented regions.
-    - Further **tuning** of the model might also help in achieving more balanced predictions.
     """)
