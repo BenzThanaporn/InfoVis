@@ -252,7 +252,7 @@ elif page == "Tag Distribution Comparison":
     hatch_patterns = {'province': '///'}  # Hatch pattern for province
 
     # Create a bar chart comparing tag distributions
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(10, 6))
     tags = ['LOC', 'ADDR', 'POST', 'O']
 
     # Get counts for Bangkok and provinces
@@ -264,19 +264,27 @@ elif page == "Tag Distribution Comparison":
 
     # Plot bars with colors and hatch patterns
     for i, tag in enumerate(tags):
-        ax.bar(index[i], bangkok_counts[i], bar_width, 
-            label='Bangkok' if i == 0 else "", 
-            color=bar_colors[tag]['bangkok'])
-        ax.bar(index[i] + bar_width, province_counts[i], bar_width, 
-            label='Province' if i == 0 else "", 
-            color=bar_colors[tag]['province'], hatch=hatch_patterns['province'])
+        bangkok_bar = ax.bar(index[i], bangkok_counts[i], bar_width, 
+                             label='Bangkok' if i == 0 else "", 
+                             color=bar_colors[tag]['bangkok'])
+        province_bar = ax.bar(index[i] + bar_width, province_counts[i], bar_width, 
+                              label='Province' if i == 0 else "", 
+                              color=bar_colors[tag]['province'], hatch=hatch_patterns['province'])
+
+        # Add text above bars for Bangkok
+        ax.text(index[i], bangkok_counts[i] + 1, str(bangkok_counts[i]), 
+                ha='center', va='bottom', fontsize=10, color='black')
+
+        # Add text above bars for provinces
+        ax.text(index[i] + bar_width, province_counts[i] + 1, str(province_counts[i]), 
+                ha='center', va='bottom', fontsize=10, color='black')
 
     # Set chart labels and legend
-    ax.set_xlabel('Tags')
-    ax.set_ylabel('Frequency')
-    ax.set_title('Tag Frequency Comparison: Bangkok vs. Other Provinces')
+    ax.set_xlabel('Tags', fontsize=12)
+    ax.set_ylabel('Frequency', fontsize=12)
+    ax.set_title('Tag Frequency Comparison: Bangkok vs. Other Provinces', fontsize=14)
     ax.set_xticks([i + bar_width / 2 for i in index])
-    ax.set_xticklabels(tags)
+    ax.set_xticklabels(tags, fontsize=12)
 
     # Customize the legend to include box and hatch pattern
     from matplotlib.patches import Patch
@@ -284,7 +292,7 @@ elif page == "Tag Distribution Comparison":
         Patch(facecolor='white', label='Bangkok', edgecolor='black'),
         Patch(facecolor='white', label='Other provinces', edgecolor='black', hatch='///')
     ]
-    ax.legend(handles=legend_elements, loc='upper right')
+    ax.legend(handles=legend_elements, loc='upper right', fontsize=10)
 
     # Display in Streamlit
     st.pyplot(fig)
