@@ -305,7 +305,8 @@ elif page == "Conclusions & Insights":
     st.title("Conclusions & Insights")
     st.markdown("""
     ### Summary of Findings:
-    - The **Word Clouds** provided an overview of the most frequent tokens categorized by the model.
-    - The **Tag Distribution Comparison** revealed potential biases in tag predictions between `Bangkok` and `Other Provinces`.  
+    - The POST tag (postal code) exhibits a clear and more accurate prediction pattern compared to other types of tags.  
+    - The model demonstrates unstable prediction characteristics and still produces errors, such as predicting provinces like นครราชสีมา and นครปฐม as ADDR (address) when they should be predicted as LOC (location). Similarly, it incorrectly predicts names such as นายสุริยา as ADDR when they should be classified as O (other).  
+    - From the bar chart, it can be observed that the model tends to predict words in sentences as LOC more frequently when the area being analyzed is Bangkok. The model predicts an area as LOC in Bangkok twice as often as in other provinces.
 
     """)
