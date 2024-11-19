@@ -281,7 +281,7 @@ elif page == "Tag Distribution Comparison":
     from matplotlib.patches import Patch
     legend_elements = [
         Patch(facecolor='white', label='Bangkok', edgecolor='black'),
-        Patch(facecolor='white', label='Province', edgecolor='black', hatch='///')
+        Patch(facecolor='white', label='Other provinces', edgecolor='black', hatch='///')
     ]
     ax.legend(handles=legend_elements, loc='upper right')
 
