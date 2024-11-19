@@ -218,7 +218,11 @@ elif page == "Word Clouds":
                 height=400,
                 background_color='white',
                 color_func=lambda *args, **kwargs: wordcloud_colors[category],
-                font_path='Sarabun-Regular.ttf'
+                font_path='Sarabun-Regular.ttf',
+                max_font_size=75,  # Increase the max font size
+                #min_font_size=20,
+                #relative_scaling=0.1,  # Adjust word size scaling
+                collocations=False  # Prevent collocations from affecting word size
             ).generate_from_frequencies(word_freq)
             plt.figure(figsize=(10, 5))
             plt.imshow(wordcloud, interpolation='bilinear')
