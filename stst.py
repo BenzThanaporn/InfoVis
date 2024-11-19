@@ -11,6 +11,7 @@ import math
 import random
 from collections import defaultdict
 
+
 # Load the CSV file with ID column
 data = pd.read_csv('thai_addresses_with_ID(2).csv')
 
@@ -140,7 +141,6 @@ if page == "Introduction":
     if current_sentence_index < len(default_sentences):
         visualize_entities_crf(default_sentences[current_sentence_index])
 
-
 # Word Clouds Page
 elif page == "Word Clouds":
     st.title("Word Clouds by Tag")
@@ -186,21 +186,13 @@ elif page == "Word Clouds":
     for category, words in categories.items():
         if len(words) > 0 and category in selected_tags:
             word_freq = Counter(words)
-            
-            # Normalize word frequencies to assign consistent sizes for words with the same frequency
-            max_freq = max(word_freq.values())
-            normalized_sizes = {word: int((freq / max_freq) * 100) for word, freq in word_freq.items()}
-
-            # Generate word cloud using normalized sizes
             wordcloud = WordCloud(
                 width=800,
                 height=400,
                 background_color='white',
                 color_func=lambda *args, **kwargs: wordcloud_colors[category],
                 font_path='Sarabun-Regular.ttf'
-            ).generate_from_frequencies(normalized_sizes)
-            
-            # Plot the word cloud
+            ).generate_from_frequencies(word_freq)
             plt.figure(figsize=(10, 5))
             plt.imshow(wordcloud, interpolation='bilinear')
             plt.axis('off')
