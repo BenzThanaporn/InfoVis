@@ -215,10 +215,10 @@ elif page == "Word Clouds":
 
     # Create Word Clouds for each selected tag
     categories = {
-        'LOC': filtered_data[filtered_data['Predicted Tag'] == 'LOC']['Token'],
+        'O': filtered_data[filtered_data['Predicted Tag'] == 'O']['Token'],
         'ADDR': filtered_data[filtered_data['Predicted Tag'] == 'ADDR']['Token'],
-        'POST': filtered_data[filtered_data['Predicted Tag'] == 'POST']['Token'],
-        'O': filtered_data[filtered_data['Predicted Tag'] == 'O']['Token']
+        'LOC': filtered_data[filtered_data['Predicted Tag'] == 'LOC']['Token'],
+        'POST': filtered_data[filtered_data['Predicted Tag'] == 'POST']['Token']
     }
 
     for category, words in categories.items():
