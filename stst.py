@@ -175,6 +175,17 @@ elif page == "Word Clouds":
     Let's see if there are any differences in which words are tagged as `LOC`, `ADDR`, `POST`, and `O` for Bangkok and other provinces.
     LOC (tambon, amphoe, or province), POST (postal code), ADDR (other address element), or O (the rest).
     """)
+    
+    st.markdown("""
+    <div style="font-size: 16px;">
+        <span style="background-color: #6699CC; padding: 5px; border-radius: 5px;">O (the rest)</span>
+        <span style="background-color: #CCCCCC; padding: 5px; border-radius: 5px;">ADDR (other address element)</span>
+        <span style="background-color: #FF7F00; padding: 5px; border-radius: 5px;">LOC (tambon, amphoe, or province)</span>
+        <span style="background-color: #FF3399; padding: 5px; border-radius: 5px;">POST (postal code)</span>
+
+       
+    </div>
+    """, unsafe_allow_html=True)
 
     # Filtering Options
     st.sidebar.header('Filtering Options')
