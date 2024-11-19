@@ -7,3 +7,4 @@ networkx
 wordcloud
 pyvis
 sklearn_crfsuite
+plotly
